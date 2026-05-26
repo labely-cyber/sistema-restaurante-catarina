@@ -2,11 +2,11 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Clientes - Restaurante Catarina</title>
+    <title>Estoque - Restaurante Catarina</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 0; display: flex; background-color: #f4f4f4; }
         
-        /* Menu Lateral (Igual ao Dashboard) */
+        /* Menu Lateral */
         .sidebar { width: 250px; background-color: #e0e0e0; height: 100vh; box-shadow: 2px 0 5px rgba(0,0,0,0.1); }
         .logo { background-color: #d4af37; padding: 20px; font-weight: bold; font-size: 22px; text-align: center; color: #333; }
         .menu { list-style: none; padding: 0; margin: 0; }
@@ -18,15 +18,19 @@
         .content { flex: 1; padding: 30px; }
         .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         
-        /* Elementos da Tela de Clientes */
+        /* Elementos da Tela de Estoque */
         .btn-novo { background-color: #d4af37; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 4px; float: right; }
         .search-bar { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
         
-        /* Tabela de Clientes */
+        /* Tabela de Estoque */
         table { width: 100%; border-collapse: collapse; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-radius: 8px; overflow: hidden; }
         th, td { padding: 15px; text-align: left; border-bottom: 1px solid #ddd; }
         th { background-color: #e0e0e0; }
         tr:hover { background-color: #f9f9f9; }
+        
+        /* Status de Estoque */
+        .status-ok { color: green; font-weight: bold; }
+        .status-baixo { color: red; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -45,38 +49,49 @@
 
     <div class="content">
         <div class="header-top">
-            <h2>Gestão de Clientes</h2>
+            <h2>Controle de Estoque</h2>
             <div style="font-weight: bold; color: #666;">Olá, Admin | <a href="index.html" style="color: #d4af37; text-decoration: none;">Sair</a></div>
         </div>
 
-        <button class="btn-novo">+ Novo Cliente</button>
+        <button class="btn-novo">+ Novo Produto</button>
         <br><br><br>
         
-        <input type="text" class="search-bar" placeholder="🔍 Código, nome, telefone ou e-mail...">
+        <input type="text" class="search-bar" placeholder="🔍 Buscar produtos pelo nome ou código...">
 
         <table>
             <thead>
                 <tr>
-                    <th>Id</th>
-                    <th>Nome Completo</th>
-                    <th>Telefone</th>
-                    <th>Email</th>
+                    <th>Código</th>
+                    <th>Produto</th>
+                    <th>Categoria</th>
+                    <th>Qtd. Atual</th>
+                    <th>Status</th>
                     <th>Ações</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>1</td>
-                    <td>João Santos</td>
-                    <td>(15) 99999-1111</td>
-                    <td>joao@email.com</td>
+                    <td>001</td>
+                    <td>Arroz Branco (5kg)</td>
+                    <td>Matéria-prima</td>
+                    <td>15 un</td>
+                    <td class="status-ok">Normal</td>
                     <td style="color: #d4af37; font-weight: bold; cursor:pointer;">Editar</td>
                 </tr>
                 <tr>
-                    <td>2</td>
-                    <td>Maria Oliveira</td>
-                    <td>(15) 98888-2222</td>
-                    <td>maria@email.com</td>
+                    <td>002</td>
+                    <td>Coca-Cola 2L</td>
+                    <td>Bebidas</td>
+                    <td>3 un</td>
+                    <td class="status-baixo">Baixo</td>
+                    <td style="color: #d4af37; font-weight: bold; cursor:pointer;">Editar</td>
+                </tr>
+                <tr>
+                    <td>003</td>
+                    <td>Feijão Carioca (1kg)</td>
+                    <td>Matéria-prima</td>
+                    <td>20 un</td>
+                    <td class="status-ok">Normal</td>
                     <td style="color: #d4af37; font-weight: bold; cursor:pointer;">Editar</td>
                 </tr>
             </tbody>

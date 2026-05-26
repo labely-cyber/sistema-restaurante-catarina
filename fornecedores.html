@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Fornecedores - Restaurante Catarina</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; display: flex; background-color: #f4f4f4; }
+        
+        /* Menu Lateral Integrado */
+        .sidebar { width: 250px; background-color: #e0e0e0; height: 100vh; box-shadow: 2px 0 5px rgba(0,0,0,0.1); }
+        .logo { background-color: #d4af37; padding: 20px; font-weight: bold; font-size: 22px; text-align: center; color: #333; }
+        .menu { list-style: none; padding: 0; margin: 0; }
+        .menu li { padding: 15px 20px; border-bottom: 1px solid #ccc; cursor: pointer; color: #333; font-weight: bold; }
+        .menu li:hover { background-color: #d4af37; color: white; }
+        .menu .ativo { background-color: white; color: #000; border-left: 5px solid #d4af37; }
+
+        /* Área Principal */
+        .content { flex: 1; padding: 30px; position: relative; }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        
+        /* Botões e Busca */
+        .btn-novo { background-color: #d4af37; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 4px; float: right; color: #000; }
+        .btn-novo:hover { background-color: #b8962e; }
+        .search-bar { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        
+        /* Tabela de Fornecedores */
+        table { width: 100%; border-collapse: collapse; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-radius: 8px; overflow: hidden; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #e0e0e0; }
+        tr:hover { background-color: #f9f9f9; }
+        .status-ativo { color: green; font-weight: bold; }
+
+        /* MODAL (Janela de Novo Fornecedor) */
+        .modal-overlay { 
+            display: none; 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.5); justify-content: center; align-items: center; 
+            z-index: 1000;
+        }
+        .modal-box { 
+            background: white; padding: 25px; border-radius: 8px; width: 600px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); position: relative;
+        }
+        .modal-box h3 { margin-top: 0; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
+        .close-btn { position: absolute; top: 15px; right: 20px; cursor: pointer; font-weight: bold; font-size: 18px; color: #666; }
+        .form-group { margin-bottom: 15px; display: flex; gap: 15px; }
+        .form-group > div { flex: 1; }
+        .form-group label { display: block; font-size: 12px; margin-bottom: 5px; font-weight: bold; color: #333; }
+        .form-group input, .form-group select, .form-group textarea { 
+            width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; 
+        }
+        .form-actions { text-align: right; margin-top: 20px; }
+        .btn-cancelar { background: white; border: 1px solid #ccc; padding: 8px 15px; border-radius: 4px; cursor: pointer; margin-right: 10px; }
+        .btn-salvar { background: #d4af37; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="logo">Restaurante<br>🍽️ Catarina</div>
+        <ul class="menu">
+            <li onclick="window.location.href='dashboard.html'">🏠 Dashboard</li>
+            <li onclick="window.location.href='clientes.html'">👥 Clientes</li>
+            <li onclick="window.location.href='estoque.html'">📦 Estoque</li>
+            <li onclick="window.location.href='funcionarios.html'">👨‍🍳 Funcionários</li>
+            <li onclick="window.location.href='fluxo_caixa.html'">💲 Fluxo de caixa</li>
+            <li class="ativo">🚚 Fornecedores</li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <div class="header-top">
+            <h2>Gestão de Fornecedores</h2>
+            <div style="font-weight: bold; color: #666;">Olá, Admin | <a href="index.html" style="color: #d4af37; text-decoration: none;">Sair</a></div>
+        </div>
+
+        <button class="btn-novo" onclick="abrirModal()">+ Novo Fornecedor</button>
+        <br><br><br>
+        
+        <input type="text" class="search-bar" placeholder="🔍 Buscar fornecedores...">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Razão Social / Nome</th>
+                    <th>CNPJ / CPF</th>
+                    <th>Telefone</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>001</td>
+                    <td>Distribuidora de Alimentos SP</td>
+                    <td>12.345.678/0001-99</td>
+                    <td>(15) 3333-4444</td>
+                    <td class="status-ativo">Ativo</td>
+                    <td style="color: #d4af37; font-weight: bold; cursor:pointer;">Editar</td>
+                </tr>
+                <tr>
+                    <td>002</td>
+                    <td>Bebidas Catarina Ltda</td>
+                    <td>98.765.432/0001-11</td>
+                    <td>(15) 3222-1111</td>
+                    <td class="status-ativo">Ativo</td>
+                    <td style="color: #d4af37; font-weight: bold; cursor:pointer;">Editar</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal-overlay" id="modalFornecedor">
+        <div class="modal-box">
+            <span class="close-btn" onclick="fecharModal()">X</span>
+            <h3>Novo Fornecedor</h3>
+            
+            <div class="form-group">
+                <div style="flex: 2;">
+                    <label>Nome (Razão social/fantasia)*</label>
+                    <input type="text" placeholder="Nome da empresa">
+                </div>
+                <div>
+                    <label>Natureza*</label>
+                    <select>
+                        <option>Selecione</option>
+                        <option>Pessoa Jurídica</option>
+                        <option>Pessoa Física</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+                    <label>CNPJ e/ou CPF*</label>
+                    <input type="text" placeholder="00.000.000/0000-00">
+                </div>
+                <div>
+                    <label>Telefone</label>
+                    <input type="text" placeholder="(15) 3333-3333">
+                </div>
+                <div>
+                    <label>Celular (Whatsapp)</label>
+                    <input type="text" placeholder="(15) 99999-9999">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div style="flex: 1;">
+                    <label>Endereço completo*</label>
+                    <input type="text" placeholder="Rua, número, bairro, cidade...">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+                    <label>Status</label>
+                    <select>
+                        <option>Selecione</option>
+                        <option>Ativo</option>
+                        <option>Inativo</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Categoria</label>
+                    <select>
+                        <option>Selecione</option>
+                        <option>Alimentos</option>
+                        <option>Bebidas</option>
+                        <option>Embalagens</option>
+                        <option>Limpeza</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Dados Fiscais</label>
+                    <select>
+                        <option>Selecione</option>
+                        <option>Com Nota Fiscal</option>
+                        <option>Sem Nota</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+                    <label>Descrição</label>
+                    <textarea rows="2" placeholder="Informações adicionais do fornecedor..."></textarea>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
+                <button class="btn-salvar" onclick="fecharModal()">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function abrirModal() {
+            document.getElementById('modalFornecedor').style.display = 'flex';
+        }
+        function fecharModal() {
+            document.getElementById('modalFornecedor').style.display = 'none';
+        }
+    </script>
+
+</body>
+</html>

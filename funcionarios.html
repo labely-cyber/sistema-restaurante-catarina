@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Funcionários - Restaurante Catarina</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; display: flex; background-color: #f4f4f4; }
+        
+        /* Menu Lateral Integrado */
+        .sidebar { width: 250px; background-color: #e0e0e0; height: 100vh; box-shadow: 2px 0 5px rgba(0,0,0,0.1); }
+        .logo { background-color: #d4af37; padding: 20px; font-weight: bold; font-size: 22px; text-align: center; color: #333; }
+        .menu { list-style: none; padding: 0; margin: 0; }
+        .menu li { padding: 15px 20px; border-bottom: 1px solid #ccc; cursor: pointer; color: #333; font-weight: bold; }
+        .menu li:hover { background-color: #d4af37; color: white; }
+        .menu .ativo { background-color: white; color: #000; border-left: 5px solid #d4af37; }
+
+        /* Área Principal */
+        .content { flex: 1; padding: 30px; position: relative; }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        
+        /* Botões e Busca */
+        .btn-novo { background-color: #d4af37; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 4px; float: right; color: #000; }
+        .btn-novo:hover { background-color: #b8962e; }
+        .search-bar { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        
+        /* Tabela de Funcionários */
+        table { width: 100%; border-collapse: collapse; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-radius: 8px; overflow: hidden; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #e0e0e0; }
+        tr:hover { background-color: #f9f9f9; }
+        .status-ativo { color: green; font-weight: bold; }
+
+        /* MODAL (Janela de Novo Funcionário - Figura 23) */
+        .modal-overlay { 
+            display: none; 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.5); justify-content: center; align-items: center; 
+            z-index: 1000;
+        }
+        .modal-box { 
+            background: white; padding: 25px; border-radius: 8px; width: 600px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); position: relative;
+        }
+        .modal-box h3 { margin-top: 0; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
+        .close-btn { position: absolute; top: 15px; right: 20px; cursor: pointer; font-weight: bold; font-size: 18px; color: #666; }
+        .form-group { margin-bottom: 15px; display: flex; gap: 15px; }
+        .form-group > div { flex: 1; }
+        .form-group label { display: block; font-size: 12px; margin-bottom: 5px; font-weight: bold; color: #333; }
+        .form-group input, .form-group select, .form-group textarea { 
+            width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; 
+        }
+        .form-actions { text-align: right; margin-top: 20px; }
+        .btn-cancelar { background: white; border: 1px solid #ccc; padding: 8px 15px; border-radius: 4px; cursor: pointer; margin-right: 10px; }
+        .btn-salvar { background: #d4af37; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="logo">Restaurante<br>🍽️ Catarina</div>
+        <ul class="menu">
+            <li onclick="window.location.href='dashboard.html'">🏠 Dashboard</li>
+            <li onclick="window.location.href='clientes.html'">👥 Clientes</li>
+            <li onclick="window.location.href='estoque.html'">📦 Estoque</li>
+            <li onclick="window.location.href='funcionarios.html'">👨‍🍳 Funcionários</li>
+           <li onclick="window.location.href='fluxo_caixa.html'">💲 Fluxo de caixa</li>
+            <li onclick="window.location.href='fornecedores.html'">🚚 Fornecedores</li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <div class="header-top">
+            <h2>Gestão de Funcionários</h2>
+            <div style="font-weight: bold; color: #666;">Olá, Admin | <a href="index.html" style="color: #d4af37; text-decoration: none;">Sair</a></div>
+        </div>
+
+        <button class="btn-novo" onclick="abrirModal()">+ Novo Funcionário</button>
+        <br><br><br>
+        
+        <input type="text" class="search-bar" placeholder="🔍 Buscar funcionários por nome, cargo ou CPF...">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Nome Completo</th>
+                    <th>CPF</th>
+                    <th>Cargo</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>001</td>
+                    <td>Sandra Catarina de Santana</td>
+                    <td>123.456.789-00</td>
+                    <td>Gerente / Proprietária</td>
+                    <td class="status-ativo">Ativo</td>
+                    <td style="color: #d4af37; font-weight: bold; cursor:pointer;">Editar</td>
+                </tr>
+                <tr>
+                    <td>002</td>
+                    <td>Ana Silva</td>
+                    <td>987.654.321-11</td>
+                    <td>Cozinheira</td>
+                    <td class="status-ativo">Ativo</td>
+                    <td style="color: #d4af37; font-weight: bold; cursor:pointer;">Editar</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal-overlay" id="modalFuncionario">
+        <div class="modal-box">
+            <span class="close-btn" onclick="fecharModal()">X</span>
+            <h3>Novo Funcionário</h3>
+            
+            <div class="form-group">
+                <div style="flex: 2;">
+                    <label>Nome Completo*</label>
+                    <input type="text" placeholder="Nome do colaborador">
+                </div>
+                <div>
+                    <label>CPF*</label>
+                    <input type="text" placeholder="000.000.000-00">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+                    <label>Telefone*</label>
+                    <input type="text" placeholder="(15) 99999-9999">
+                </div>
+                <div>
+                    <label>Email</label>
+                    <input type="email" placeholder="exemplo@email.com">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div style="flex: 1;">
+                    <label>Endereço completo</label>
+                    <input type="text" placeholder="Rua, número, bairro...">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+                    <label>Cargo*</label>
+                    <select>
+                        <option>Selecione</option>
+                        <option>Atendente</option>
+                        <option>Cozinheira</option>
+                        <option>Caixa</option>
+                        <option>Faxineira</option>
+                        <option>Auxiliar de Cozinha</option>
+                        <option>Entregador</option>
+                        <option>Gerente</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Salário*</label>
+                    <input type="text" placeholder="R$ 0,00">
+                </div>
+                <div>
+                    <label>Data de Admissão*</label>
+                    <input type="date">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+                    <label>Status</label>
+                    <select>
+                        <option>Selecione</option>
+                        <option>Ativo</option>
+                        <option>Afastado</option>
+                        <option>Desligado</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div>
+                    <label>Observações</label>
+                    <textarea rows="2" placeholder="Informações adicionais sobre o funcionário..."></textarea>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
+                <button class="btn-salvar" onclick="fecharModal()">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function abrirModal() {
+            document.getElementById('modalFuncionario').style.display = 'flex';
+        }
+        function fecharModal() {
+            document.getElementById('modalFuncionario').style.display = 'none';
+        }
+    </script>
+
+</body>
+</html>
